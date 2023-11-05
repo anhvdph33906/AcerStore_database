@@ -157,7 +157,7 @@ CREATE TABLE Khuyenmai (
    ,TGKT DATE NOT NULL
    ,TriGia FLOAT NOT NULL
    ,KieuKM VARCHAR(10) NOT NULL
-   ,TrangThai VARCHAR NOT NULL
+   ,TrangThai bit NOT NULL
 );
 GO
 
