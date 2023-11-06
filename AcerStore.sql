@@ -70,7 +70,7 @@ GO
 CREATE TABLE IMEI (
 	ImeiId INT IDENTITY (1, 1) PRIMARY KEY
    ,SanPhamChiTietId INT
-   ,Ma VARCHAR(20) NOT NULL
+   ,MaIMEI uniqueidentifier NOT NULL
 );
 GO
 
@@ -149,7 +149,7 @@ CREATE TABLE DoiTra (
 );
 
 -- 15: Khuyen mai
-CREATE TABLE Khuyenmai (
+CREATE table Khuyenmai (
 	MaKM VARCHAR(10) PRIMARY KEY
    ,SanPhamChiTietId INT
    ,TenKM NVARCHAR(100) NOT NULL
@@ -157,7 +157,7 @@ CREATE TABLE Khuyenmai (
    ,TGKT DATE NOT NULL
    ,TriGia FLOAT NOT NULL
    ,KieuKM NVARCHAR(10) NOT NULL
-   ,TrangThai bit NOT NULL
+   ,TrangThai bit default(0) NOT NULL
 );
 GO
 
@@ -195,7 +195,8 @@ GO
 ALTER TABLE DanhMuc ADD FOREIGN KEY (SanPhamId) REFERENCES SanPham (SanPhamId);
 GO
 
-ALTER TABLE IMEI ADD FOREIGN KEY (SanPhamChiTietId) REFERENCES SanPhamChiTiet (SanPhamChiTietId);
+ALTER TABLE IMEI ADD FOREIGN KEY (SanPhamChiTietId) REFERENCES SanPhamChiTiet (SanPhamChiTietId)
+, FOREIGN KEY (HoaDonChiTietId) REFERENCES HoaDonChiTiet(HoaDonChiTietId);
 GO
 
 ALTER TABLE HoaDonChiTiet ADD FOREIGN KEY (BaoHanhId) REFERENCES BaoHanh (BaoHanhId)
