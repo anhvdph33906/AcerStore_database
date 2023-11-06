@@ -1,4 +1,4 @@
-CREATE DATABASE AcerStore;
+﻿CREATE DATABASE AcerStore;
 GO
 USE AcerStore;
 GO
@@ -157,7 +157,7 @@ CREATE table Khuyenmai (
    ,TGKT DATE NOT NULL
    ,TriGia FLOAT NOT NULL
    ,KieuKM NVARCHAR(10) NOT NULL
-   ,TrangThai bit default(0) NOT NULL
+   ,TrangThai NVARCHAR(20) NOT NULL
 );
 GO
 
@@ -184,6 +184,13 @@ CREATE TABLE ThongKe (
    ,thoigian DATE
 );
 GO
+
+INSERT INTO NhanVien(MaNV, Ten, MatKhau, SoDT, VaiTro) values
+('NV001', N'Nguyễn Đình Dương', 'duong123', 0339853284, 1),
+('NV002', N'Mạc Đình Duy', 'duy123', 0339853284, 1),
+('NV003', N'Vũ Đức Anh', 'anh123', 0339853284, 1),
+('NV004', N'Đào Minh Quang', 'quang123', 0339853284, 1)
+
 
 ALTER TABLE SanPhamChiTiet ADD FOREIGN KEY (ThongSoId) REFERENCES ThongSo (ThongSoId);
 GO
