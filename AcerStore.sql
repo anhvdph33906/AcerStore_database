@@ -1,104 +1,68 @@
-CREATE DATABASE AcerStore;
+CREATE DATABASE AcerStores;
 GO
-USE AcerStore;
+USE AcerStores;
 GO
 
 --1. San pham chi tiet
 CREATE TABLE SanPhamChiTiet (
 	SanPhamChiTietId INT IDENTITY (1, 1) PRIMARY KEY
-   ,ManHinhId int not null
-   ,RamId int not null
-   ,KichThuocId int not null
-   ,CPUId int not null
-   ,HeDieuHanhId int not null
-   ,TrongLuongId int not null
-   ,MauId int not null
-   ,MaSP VARCHAR(20) NOT NULL
-   ,Ten NVARCHAR(50) NOT NULL
-   ,LoaiSP NVARCHAR(50) NOT NULL
+   ,ThongSoId INT
+   ,SanPhamId int
+   ,LoaiSP VARCHAR(50) NOT NULL
    ,SoLuong INT NOT NULL
    ,Gia MONEY NOT NULL
    ,TrangThai BIT
-   ,MoTa NVARCHAR(1000)
+   ,MoTa VARCHAR(1000)
 );
 GO
 
 --2. San pham
 CREATE TABLE SanPham (
 	SanPhamId INT IDENTITY (1, 1) PRIMARY KEY
-   ,SanPhamChiTietId INT
-   ,XuatXuId INT
-   ,NgayTao DATE NOT NULL
-   ,MoTa NVARCHAR(1000)
+   ,MaSP varchar(20) not null
+   ,Ten VARCHAR(50) NOT NULL
+   ,XuatXu INT not null
+   ,NgayRaMat date
+   ,HinhAnh image not null
+   ,MoTa VARCHAR(1000)
    ,TrangThai BIT NOT NULL
 );
 GO
 
-Create table ManHinh
-(
-ManHinhId int identity(1,1) primary key,
-TenManHinh varchar(50) not null,
+--3. Thong so
+CREATE TABLE ThongSo (
+	ThongSoId INT IDENTITY PRIMARY KEY
+   ,ManHinh VARCHAR(50) NOT NULL
+   ,Ram VARCHAR(10) NOT NULL
+   ,KichThuoc VARCHAR(30) NOT NULL
+   ,CPU VARCHAR(20) NOT NULL
+   ,HeDieuHanh VARCHAR(30) NOT NULL
+   ,TrongLuong VARCHAR(10) NOT NULL
 );
-go
-create table Ram
-(
-RamId int identity(1,1)  primary key,
-DungLuong int not null,
-loaiRam varchar(10) not null,
-);
-go
-create table KichThuoc
-(
-KichThuocId int identity(1,1)  primary key,
-NameKichThuoc varchar(50) not null,
-);
-go
-create table CPU
-(
-CPUId int identity(1,1) primary key,
-CPU varchar(30) not null
-);
-go
-create table HeDieuHanh
-(
-HeDieuHanhId int identity(1,1)  primary key,
-NameHeDieuHan varchar(30) not null
-);
-go
-create table TrongLuong
-(
-TrongLuongId int identity(1,1) primary key,
-NameTrongLuong varchar(10) not null
-);
-go
-create table Mau
-(
-MauId int identity(1,1) primary key,
-TenMau nvarchar(20) not null
-);
-go
+GO
+
 --4. Xuat xu
 CREATE TABLE XuatXu (
 	XuatXuId INT IDENTITY (1, 1) PRIMARY KEY
-   ,NoiSanXuat NVARCHAR(10) NOT NULL
-   ,NamRaMat DATE NOT NULL
+   ,NoiSanXuat VARCHAR(10) NOT NULL
+   ,NgayRaMat DATE NOT NULL
 );
 GO
 
 --5 Danh muc
 CREATE TABLE DanhMuc (
-	DanhMucId INT IDENTITY PRIMARY KEY
-   ,SanPhamId INT
+	MaDM int identity primary key not null
    ,TenDM VARCHAR(20) NOT NULL
+   ,SanPhamId int not null
 );
 GO
 
 --6. Nhan vien
 CREATE TABLE NhanVien (
 	MaNV VARCHAR(10) PRIMARY KEY NOT NULL
-   ,Ten NVARCHAR(20) NOT NULL
+   ,Ten VARCHAR(20) NOT NULL
    ,SoDT INT NOT NULL
-   ,MatKhau NVARCHAR(10) NOT NULL
+   ,MatKhau VARCHAR(10) NOT NULL
    ,VaiTro BIT NOT NULL
 );
 GO
@@ -107,13 +71,15 @@ GO
 CREATE TABLE IMEI (
 	ImeiId INT IDENTITY (1, 1) PRIMARY KEY
    ,SanPhamChiTietId INT
+   ,HoaDonId INT
    ,Ma VARCHAR(20) NOT NULL
 );
 GO
 
 --8. Hoa don chi tiet
 CREATE TABLE HoaDonChiTiet (
-	MaHD VARCHAR(20) PRIMARY KEY
+	MaHDCT VARCHAR(20) PRIMARY KEY
+	,HoaDonId INT
    ,BaoHanhId INT
    ,MaKH VARCHAR(10)
    ,MaNV VARCHAR(10)
@@ -130,10 +96,10 @@ GO
 --9. Hoa don
 CREATE TABLE HoaDon (
 	HoaDonId INT IDENTITY PRIMARY KEY
-   ,MaHD VARCHAR(20)
+   ,MaHD VARCHAR(20) not null
    ,GhiChu NVARCHAR(1000)
    ,TongTien MONEY NOT NULL
-   ,ThanhToan NVARCHAR(20) NOT NULL
+   ,ThanhToan VARCHAR(20) NOT NULL
    ,TrangThai BIT NOT NULL
 );
 GO
@@ -158,20 +124,20 @@ CREATE TABLE BaoHanh (
 GO
 
 --12. Khach hang
-CREATE TABLE KhachHang (
+Create TABLE KhachHang (
 	MaKH VARCHAR(10) PRIMARY KEY
    ,Ten NVARCHAR(30) NOT NULL
-   ,SoDT INT NOT NULL
    ,GioiTinh bit not null
+   ,SoDT INT NOT NULL
    ,DiaChi NVARCHAR(50)
-   ,TrangThai NVARCHAR(30) NOT NULL
+   ,TrangThai bit not null,
 );
 GO
 
 --13. Lich su khach hang da mua
 CREATE TABLE LichSuKhachHang (
 	LichSuKhachHangId INT IDENTITY PRIMARY KEY
-   ,MaHD VARCHAR(20)
+   ,MaHDCT VARCHAR(20)
    ,Ngaymua DATE NOT NULL
    ,SoLuong INT NOT NULL
    ,TrangThai BIT
@@ -181,22 +147,22 @@ GO
 --14: Doi tra 
 CREATE TABLE DoiTra (
 	DoiTraId INT IDENTITY PRIMARY KEY
-   ,MaHD VARCHAR(20)
+   ,MaHDCT VARCHAR(20)
    ,NgayBD DATE NOT NULL
    ,NgayKT DATE NOT NULL
    ,Lydo NVARCHAR(1000) NOT NULL
 );
-go
+
 -- 15: Khuyen mai
 CREATE TABLE Khuyenmai (
 	MaKM VARCHAR(10) PRIMARY KEY
-   ,SanPhamChiTietId INT
+   ,SanPhamId INT
    ,TenKM NVARCHAR(100) NOT NULL
    ,TGBD DATE NOT NULL
    ,TGKT DATE NOT NULL
    ,TriGia FLOAT NOT NULL
-   ,KieuKM NVARCHAR(10) NOT NULL
-   ,TrangThai bit NOT NULL
+   ,KieuKM VARCHAR(10) NOT NULL
+   ,TrangThai VARCHAR NOT NULL
 );
 GO
 
@@ -224,44 +190,40 @@ CREATE TABLE ThongKe (
 );
 GO
 
-ALTER TABLE SanPhamChiTiet ADD FOREIGN KEY (ManHinhId) REFERENCES ManHinh (ManHinhId),
-FOREIGN KEY (RamId) REFERENCES Ram (RamId),
-FOREIGN KEY (KichThuocId) REFERENCES KichThuoc (KichThuocId),
-FOREIGN KEY (CPUId) REFERENCES CPU (CPUId),
-FOREIGN KEY (HeDieuHanhId) REFERENCES HeDieuHanh (HeDieuHanhId),
-FOREIGN KEY (TrongLuongId) REFERENCES TrongLuong(TrongLuongId),
-FOREIGN KEY (MauId) REFERENCES Mau(MauId);
+ALTER TABLE SanPhamChiTiet ADD FOREIGN KEY (ThongSoId) REFERENCES ThongSo (ThongSoId),
+FOREIGN KEY (SanPhamId) REFERENCES SanPham (SanPhamId);
 GO
-
 
 ALTER TABLE SanPham ADD FOREIGN KEY (SanPhamChiTietId) REFERENCES SanPhamChiTiet (SanPhamChiTietId)
-, FOREIGN KEY (XuatXuId) REFERENCES XuatXu (XuatXuId);
 GO
 
+ALTER TABLE SanPham ADD FOREIGN KEY (MaDM) REFERENCES DanhMuc (MaDM)
+GO
 ALTER TABLE DanhMuc ADD FOREIGN KEY (SanPhamId) REFERENCES SanPham (SanPhamId);
 GO
 
 ALTER TABLE IMEI ADD FOREIGN KEY (SanPhamChiTietId) REFERENCES SanPhamChiTiet (SanPhamChiTietId),
-FOREIGN KEY (MaHD) REFERENCES HoaDon(MaHD);
+FOREIGN KEY (HoaDonId) REFERENCES HoaDon(HoaDonId);
 GO
 
 ALTER TABLE HoaDonChiTiet ADD FOREIGN KEY (BaoHanhId) REFERENCES BaoHanh (BaoHanhId)
 , FOREIGN KEY (MaKH) REFERENCES KhachHang (MaKH)
 , FOREIGN KEY (MaNV) REFERENCES NhanVien (MaNV);
 GO
-ALTER TABLE HoaDon ADD FOREIGN KEY (MaHD) REFERENCES HoaDonChiTiet (MaHD);
+
+ALTER TABLE HoaDonChiTiet ADD FOREIGN KEY (HoaDonId) REFERENCES HoaDon (HoaDonId);
 GO
 
 ALTER TABLE LichSuHoaDon ADD FOREIGN KEY (HoaDonId) REFERENCES HoaDon (HoaDonId);
 GO
 
-ALTER TABLE LichSuKhachHang ADD FOREIGN KEY (MaHD) REFERENCES HoaDonChiTiet (MaHD);
+ALTER TABLE LichSuKhachHang ADD FOREIGN KEY (MaHDCT) REFERENCES HoaDonChiTiet (MaHDCT);
 GO
 
-ALTER TABLE DoiTra ADD FOREIGN KEY (MaHD) REFERENCES HoaDonChiTiet (MaHD);
+ALTER TABLE DoiTra ADD FOREIGN KEY (MaHDCT) REFERENCES HoaDonChiTiet (MaHDCT);
 GO
 
-ALTER TABLE Khuyenmai ADD FOREIGN KEY (SanPhamChiTietId) REFERENCES SanPhamChiTiet (SanPhamChiTietId);
+ALTER TABLE Khuyenmai ADD FOREIGN KEY (SanPhamId) REFERENCES SanPham (SanPhamId);
 GO
 
 ALTER TABLE GiaoCa ADD FOREIGN KEY (MaNV) REFERENCES NhanVien (MaNV);
@@ -271,7 +233,5 @@ ALTER TABLE ThongKe ADD CONSTRAINT Pk_SanPham_HoaDon PRIMARY KEY (SanPhamId, Hoa
 , FOREIGN KEY (SanPhamId) REFERENCES SanPham (SanPhamId)
 , FOREIGN KEY (HoaDonId) REFERENCES HoaDon (HoaDonId);
 
-Insert into NhanVien(MaNV,Ten,SoDT,MatKhau,VaiTro) values
-('NV01', 'Park Hang Seo',0333233333,12345,0),
-('NV02', 'Park Jin Sun',0555555555,1234,1)
-
+CREATE TABLE SanPham 
+Add MaSP varchar(20) not null;
